@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TaskListApp</string>
+    <string name="task_list_title">Task List</string>
+    <string name="task_detail_title">Task Detail</string>
+    <string name="task_input_title">Title</string>
+    <string name="task_input_desc">Description</string>
+    <string name="task_input_date">Date</string>
+    <string name="save_btn_text">Save</string>
+</resources>
