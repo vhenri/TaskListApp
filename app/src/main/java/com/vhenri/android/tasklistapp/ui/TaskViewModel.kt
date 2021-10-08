@@ -1,24 +1,31 @@
 package com.vhenri.android.tasklistapp.ui
 
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import com.vhenri.android.tasklistapp.core.lifecycle.SingleLiveEvent
+import com.vhenri.android.tasklistapp.data.TaskDate
 import com.vhenri.android.tasklistapp.data.TaskItem
 import com.vhenri.android.tasklistapp.enums.AppState
 import com.vhenri.android.tasklistapp.enums.NavDestinationData
 import com.vhenri.android.tasklistapp.ui.TaskDetailFragment.Companion.TASK_DETAIL_ID
 import org.koin.core.component.KoinComponent
-import java.util.UUID
+import java.util.*
 import kotlin.collections.ArrayList
+import com.vhenri.android.tasklistapp.utils.getFormattedDate
+import java.time.LocalDate
 
 class TaskViewModel() : ViewModel(), KoinComponent {
+
+    private var datePickerCalendar = Calendar.getInstance().apply { Calendar.YEAR }
 
     val appState = SingleLiveEvent<NavDestinationData>()
     val listOfTasks = SingleLiveEvent<ArrayList<TaskItem>>()
 
     val currentInputTaskTitle = SingleLiveEvent<String?>()
     val currentInputTaskDesc = SingleLiveEvent<String?>()
-    val currentInputTaskDate = SingleLiveEvent<String?>()
+    val currentInputTaskDate = SingleLiveEvent<TaskDate?>()
 
     private val currentEditedTaskIndex = SingleLiveEvent<Int>()
     val currentEditedTaskData = SingleLiveEvent<TaskItem>()
@@ -28,8 +35,8 @@ class TaskViewModel() : ViewModel(), KoinComponent {
         val newTask = TaskItem(
             UUID.randomUUID().toString(),
             currentInputTaskTitle.value ?: "Untitled Task",
-            currentInputTaskDesc.value ?: "Description",
-            currentInputTaskDate.value ?: "Date here"
+            currentInputTaskDesc.value,
+            currentInputTaskDate.value
         )
 
         resetInputValues()
@@ -58,8 +65,8 @@ class TaskViewModel() : ViewModel(), KoinComponent {
         val taskIndex = currentEditedTaskIndex.value ?: -1
         var updatedTask = currentEditedTaskData.value
         updatedTask?.title = currentInputTaskTitle.value ?: ""
-        updatedTask?.desc = currentInputTaskDesc.value ?: ""
-        updatedTask?.date = currentInputTaskDate.value ?: ""
+        updatedTask?.desc = currentInputTaskDesc.value
+        updatedTask?.date = currentInputTaskDate.value
 
         if (updatedTask != null) {
             taskList[taskIndex] = updatedTask
@@ -78,10 +85,32 @@ class TaskViewModel() : ViewModel(), KoinComponent {
         appState.postValue(NavDestinationData(AppState.TASK_DETAIL, b))
     }
 
-    fun resetInputValues(){
+    private fun resetInputValues(){
         currentInputTaskTitle.value = null
         currentInputTaskDesc.value = null
         currentInputTaskDate.value = null
+    }
+
+    fun openDatePickerDialog(context: Context) {
+        val date =
+                DatePickerDialog.OnDateSetListener { _, y, m, d ->
+                    datePickerCalendar.set(Calendar.YEAR, y)
+                    datePickerCalendar.set(Calendar.MONTH, m)
+                    datePickerCalendar.set(Calendar.DAY_OF_MONTH, d)
+                    currentInputTaskDate.value = TaskDate(y, m, d)
+                }
+        val picker = DatePickerDialog(
+                context,
+                date,
+                datePickerCalendar.get(Calendar.YEAR),
+                datePickerCalendar.get(Calendar.MONTH),
+                datePickerCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        picker.show()
+    }
+
+    fun formatDateString(date: TaskDate): String {
+        return "Date: " + getFormattedDate(date.year, date.month, date.day)
     }
 
 }

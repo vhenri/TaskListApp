@@ -56,6 +56,9 @@ class TaskDetailFragment : Fragment() {
                 NavHostFragment.findNavController(this).popBackStack()
             }
         })
+        viewModel.currentInputTaskDate.observe(this, Observer { date ->
+            binding.selectedDate.text = date?.let { viewModel.formatDateString(it) }
+        })
 
         handleInputs()
     }
@@ -75,12 +78,14 @@ class TaskDetailFragment : Fragment() {
             val taskData = viewModel.currentEditedTaskData.value
             binding.titleEditText.setText(taskData?.title)
             binding.descEditText.setText(taskData?.desc)
-            binding.dateEditText.setText(taskData?.date)
+            binding.selectedDate.text = taskData?.date?.let { viewModel.formatDateString(it) }
         }
     }
 
     private fun handleInputs() {
-        // Handle form inputs
+        binding.datePickerButton.setOnClickListener {
+            viewModel.openDatePickerDialog(binding.root.context)
+        }
         binding.titleEditText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 // Fires right as the text is being changed (even supplies the range of text)
@@ -100,21 +105,6 @@ class TaskDetailFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 // Fires right as the text is being changed (even supplies the range of text)
                 viewModel.currentInputTaskDesc.value = s.toString()
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // Fires right before text is changing
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                // Fires right after the text has changed
-            }
-        })
-
-        binding.dateEditText.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // Fires right as the text is being changed (even supplies the range of text)
-                viewModel.currentInputTaskDate.value = s.toString()
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

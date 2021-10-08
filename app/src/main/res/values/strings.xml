@@ -6,4 +6,6 @@
     <string name="task_input_desc">Description</string>
     <string name="task_input_date">Date</string>
     <string name="save_btn_text">Save</string>
+    <string name="date">Date: </string>
+    <string name="show_date_picker_text">Select Date</string>
 </resources>
