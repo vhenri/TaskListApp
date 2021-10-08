@@ -6,3 +6,4 @@ A simple android app written in Kotlin to demonstrate android development skills
 - No API calls or persistent data with local database
 - Default themeing and no light/dark mode support
 - Empty tasks are acceptable, default value used for Title only
+- No validation on input fields

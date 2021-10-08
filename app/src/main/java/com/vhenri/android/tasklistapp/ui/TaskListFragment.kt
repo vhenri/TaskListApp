@@ -40,9 +40,6 @@ class TaskListFragment : Fragment() {
                 it.bundle
             )
         })
-        viewModel.listOfTasks.observe(this, Observer {
-            adapter.setData(it)
-        })
     }
     private fun initBindings() {
         binding.taskListRv.adapter = adapter
