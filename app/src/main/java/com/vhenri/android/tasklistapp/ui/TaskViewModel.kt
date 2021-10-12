@@ -3,6 +3,7 @@ package com.vhenri.android.tasklistapp.ui
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import com.vhenri.android.tasklistapp.core.lifecycle.SingleLiveEvent
 import com.vhenri.android.tasklistapp.data.TaskDate
@@ -14,7 +15,6 @@ import org.koin.core.component.KoinComponent
 import java.util.*
 import kotlin.collections.ArrayList
 import com.vhenri.android.tasklistapp.utils.getFormattedDate
-import java.time.LocalDate
 
 class TaskViewModel() : ViewModel(), KoinComponent {
 
@@ -27,7 +27,8 @@ class TaskViewModel() : ViewModel(), KoinComponent {
     val currentInputTaskDesc = SingleLiveEvent<String?>()
     val currentInputTaskDate = SingleLiveEvent<TaskDate?>()
 
-    private val currentEditedTaskIndex = SingleLiveEvent<Int>()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val currentEditedTaskIndex = SingleLiveEvent<Int>()
     val currentEditedTaskData = SingleLiveEvent<TaskItem>()
 
     fun addTaskToList(){
